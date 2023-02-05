@@ -15,6 +15,29 @@
 #include <cxxopt/cxxopt.hpp>
 #include <FileWatcher/FileWatcher.h>
 
+#define CCVM_OPCODES {"STP", "MOV", "RAND", "PSH", "POP", "SYS"}
+#define CCVM_REGISTERS { "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7" }
+#define CCVM_INSTRUCTION_SET {\
+            {"stp",     {\
+                                {0x00, {}}\
+                        }},\
+            {"syscall", {\
+                                {0xff, {}}\
+                        }},\
+            {"dup",     {\
+                                {0x05, {}}\
+                        }},\
+            {"psh",     {\
+                                {0x01, {TokenType::NUMBER}},\
+                                {0x02, {TokenType::REGISTER}},\
+                                {0x0c, {TokenType::ADDRESS}}\
+                        }},\
+            {"pop",     {\
+                                {0x03, {TokenType::REGISTER}},\
+                                {0x04, {TokenType::ADDRESS}}\
+                        }},\
+    }
+
 // how to compile:
 // g++ main.cpp -o cca -std=c++11 && ./cca test.cca
 
@@ -93,10 +116,8 @@ namespace CCA {
     }
 
     bool isRegisterOrInstruction(std::string code) {
-        std::vector<std::string> opcodes = {"rand", "pow", "mod", "mov", "stp", "syscall", "push", "pop", "dup", "add",
-                                            "sub", "mul", "div", "not", "and", "or", "xor", "jmp", "je", "jne", "jg",
-                                            "js", "jo", "frs", "inc", "dec", "call", "ret", "cmp"};
-        std::vector<std::string> registers = {"a", "b", "c", "d"};
+        std::vector<std::string> opcodes = CCVM_OPCODES;
+        std::vector<std::string> registers = CCVM_REGISTERS;
 
         // indentify the opcodes
         if (in_array(code, opcodes) || in_array(code, registers))
@@ -493,10 +514,8 @@ namespace CCA {
         for (unsigned int i = 0; i < tokens.size(); i++) {
             Token &t = tokens[i];
 
-            std::vector<std::string> opcodes = {"rand", "pow", "mod", "mov", "stp", "syscall", "push", "pop", "dup",
-                                                "add", "sub", "mul", "div", "not", "and", "or", "xor", "jmp", "je",
-                                                "jne", "jg", "js", "jo", "frs", "inc", "dec", "call", "ret", "cmp"};
-            std::vector<std::string> registers = {"a", "b", "c", "d"};
+            std::vector<std::string> opcodes = CCVM_OPCODES;
+            std::vector<std::string> registers = CCVM_REGISTERS;
 
             // indentify the opcodes
             if (t.type == TokenType::IDENTIFIER && in_array(t.valString, opcodes))
@@ -589,172 +608,7 @@ namespace CCA {
         }
     }
 
-    std::map<std::string, std::vector<Instruction>> instructionSet = {
-            {"stp",     {
-                                {0x00, {}}
-                        }},
-
-            {"syscall", {
-                                {0xff, {}}
-                        }},
-
-            {"dup",     {
-                                {0x05, {}}
-                        }},
-
-            {"psh",     {
-                                {0x01, {TokenType::NUMBER}},
-                                {0x02, {TokenType::REGISTER}},
-                                {0x0c, {TokenType::ADDRESS}}
-                        }},
-
-            {"pop",     {
-                                {0x03, {TokenType::REGISTER}},
-                                {0x04, {TokenType::ADDRESS}}
-                        }},
-
-            {"mov",     {
-                                {0x06, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x07, {TokenType::ADDRESS, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x08, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::ADDRESS}},
-                                {0x09, {TokenType::ADDRESS, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x0a, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x0b, {TokenType::ADDRESS, TokenType::DIVIDER, TokenType::ADDRESS}}
-                        }},
-
-            {"add",     {
-                                {0x70, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x71, {TokenType::NUMBER}},
-                                {0x10, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x11, {}}
-                        }},
-
-            {"sub",     {
-                                {0x72, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x73, {TokenType::NUMBER}},
-                                {0x12, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x13, {}}
-                        }},
-
-            {"mul",     {
-                                {0x74, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x75, {TokenType::NUMBER}},
-                                {0x14, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x15, {}}
-                        }},
-
-            {"div",     {
-                                {0x76, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x77, {TokenType::NUMBER}},
-                                {0x16, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x17, {}}
-                        }},
-
-            {"not",     {
-                                {0x76, {TokenType::REGISTER}},
-                                {0x77, {}}
-                        }},
-
-            {"and",     {
-                                {0x78, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x79, {TokenType::NUMBER}},
-                                {0x1a, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x1b, {}}
-                        }},
-
-            {"or",      {
-                                {0x7a, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x7b, {TokenType::NUMBER}},
-                                {0x1c, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x1d, {}}
-                        }},
-
-            {"xor",     {
-                                {0x7c, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x7d, {TokenType::NUMBER}},
-                                {0x1e, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}},
-                                {0x1f, {}}
-                        }},
-
-            {"jmp",     {
-                                {0x20, {TokenType::NUMBER}}
-                        }},
-
-            {"cmp",     {
-                                {0x31, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x32, {TokenType::NUMBER}},
-                                {0x30, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::REGISTER}}
-                        }},
-
-            {"je",      {
-                                {0x33, {TokenType::NUMBER}}
-                        }},
-
-            {"jne",     {
-                                {0x34, {TokenType::NUMBER}}
-                        }},
-
-            {"jg",      {
-                                {0x35, {TokenType::NUMBER}}
-                        }},
-
-            {"js",      {
-                                {0x36, {TokenType::NUMBER}}
-                        }},
-
-            {"jo",      {
-                                {0x37, {TokenType::NUMBER}}
-                        }},
-
-            {"frs",     {
-                                {0x40, {}}
-                        }},
-
-            {"inc",     {
-                                {0x50, {TokenType::REGISTER}},
-                                {0x52, {}}
-                        }},
-
-            {"dec",     {
-                                {0x51, {TokenType::REGISTER}},
-                                {0x53, {}}
-                        }},
-
-            {"ret",     {
-                                {0x61, {}}
-                        }},
-
-            {"call",    {
-                                {0x60, {TokenType::NUMBER}},
-                        }},
-
-            {"rand",    {
-                                {0x7e, {TokenType::REGISTER}},
-                                {0x7f, {}}
-                        }},
-
-            {"pow",     {
-                                {0x80, {TokenType::REGISTER}},
-                                {0x81, {}},
-                                {0x82, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x83, {TokenType::NUMBER}}
-                        }},
-
-            {"sqrt",    {
-                                {0x84, {TokenType::REGISTER}},
-                                {0x85, {}},
-                        }},
-
-            {"root",    {
-                                {0x8a, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x8b, {TokenType::NUMBER}}
-                        }},
-
-            {"mod",     {
-                                {0x8e, {TokenType::REGISTER, TokenType::DIVIDER, TokenType::NUMBER}},
-                                {0x8f, {TokenType::NUMBER}}
-                        }},
-    };
+    std::map<std::string, std::vector<Instruction>> instructionSet = CCVM_INSTRUCTION_SET;
 
     void generateBytecode(std::vector<Definition> definitions, std::vector<Token> tokens, std::string fileName) {
         std::vector<unsigned char> bytecode;
