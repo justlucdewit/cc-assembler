@@ -4,3 +4,4 @@ test.ccb
 .vscode
 /cmake-build-debug
 /.idea
+*.exe
