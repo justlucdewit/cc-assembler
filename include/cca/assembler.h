@@ -15,28 +15,23 @@
 #include <cxxopt/cxxopt.hpp>
 #include <FileWatcher/FileWatcher.h>
 
+#define CCBC_VERSION (char)0x00, (char)0x01, (char)0x00, (char)0x00
 #define CCVM_OPCODES {"STP", "MOV", "RAND", "PSH", "POP", "SYS"}
-#define CCVM_REGISTERS { "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7" }
+#define CCVM_REGISTERS { "a", "b", "c", "d", "e", "f", "g", "h" }
 #define CCVM_INSTRUCTION_SET {\
-            {"stp",     {\
-                                {0x00, {}}\
-                        }},\
-            {"syscall", {\
-                                {0xff, {}}\
-                        }},\
-            {"dup",     {\
-                                {0x05, {}}\
-                        }},\
-            {"psh",     {\
-                                {0x01, {TokenType::NUMBER}},\
-                                {0x02, {TokenType::REGISTER}},\
-                                {0x0c, {TokenType::ADDRESS}}\
-                        }},\
-            {"pop",     {\
-                                {0x03, {TokenType::REGISTER}},\
-                                {0x04, {TokenType::ADDRESS}}\
-                        }},\
-    }
+    { "STP", {\
+        {0x00, {}} }},\
+    { "SYS", {\
+        {0xFF, {}} }},\
+    { "MOV", {\
+        {0x10, {TokenType::REGISTER, TokenType::NUMBER}},\
+        {0x11, {TokenType::REGISTER, TokenType::REGISTER}} }},\
+    { "PSH", {\
+        {0x12, {TokenType::REGISTER}},\
+        {0x13, {TokenType::NUMBER}} }},\
+    { "POP", {\
+        {0x12, {TokenType::REGISTER}} }}\
+}
 
 // how to compile:
 // g++ main.cpp -o cca -std=c++11 && ./cca test.cca
@@ -517,7 +512,7 @@ namespace CCA {
             std::vector<std::string> opcodes = CCVM_OPCODES;
             std::vector<std::string> registers = CCVM_REGISTERS;
 
-            // indentify the opcodes
+            // identify the opcodes
             if (t.type == TokenType::IDENTIFIER && in_array(t.valString, opcodes))
                 t.type = TokenType::OPCODE;
 
@@ -688,7 +683,8 @@ namespace CCA {
         }
 
         // Section Seperation Sequence
-        char SSS[4] = {0x1d, 0x1d, 0x1d, 0x1d};
+        char a = 254;
+        
 
         std::ofstream file;
         file.open(fileName, std::ios::binary);
@@ -713,7 +709,9 @@ namespace CCA {
             }
         }
 
-        file.write(SSS, 4);
+        char bytecodeHeader[] = {(char)0xDE, (char)0xAD, (char)0xBE, (char)0xEF, CCBC_VERSION};
+
+        file.write(bytecodeHeader, 8);
 
         std::string s(bytecode.begin(), bytecode.end());
         file.write(s.c_str(), s.size());

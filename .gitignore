@@ -5,3 +5,5 @@ test.ccb
 /cmake-build-debug
 /.idea
 *.exe
+testing.cca
+testing.ccb
