@@ -1,2 +1,2 @@
 build:
-	g++ sources/main.cpp sources/FileWatcher/FileWatcher.cpp sources/FileWatcher/FileWatcherLinux.cpp sources/FileWatcher/FileWatcherOSX.cpp sources/FileWatcher/FileWatcherWin32.cpp -o cca -Iinclude
+	g++ sources/main.cpp sources/FileWatcher/FileWatcher.cpp sources/FileWatcher/FileWatcherLinux.cpp sources/FileWatcher/FileWatcherOSX.cpp sources/FileWatcher/FileWatcherWin32.cpp -o cca -Iinclude -std=c++11
