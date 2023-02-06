@@ -21,16 +21,89 @@
 #define CCVM_INSTRUCTION_SET {\
     { "STP", {\
         {0x00, {}} }},\
-    { "SYS", {\
-        {0xFF, {}} }},\
+    { "JMP", {\
+        {0x01, {TokenType::ADDRESS}} }},\
+    { "JNE", {\
+        {0x03, {TokenType::ADDRESS}} }},\
+    { "JEQ", {\
+        {0x04, {TokenType::ADDRESS}} }},\
+    { "JLT", {\
+        {0x05, {TokenType::ADDRESS}} }},\
+    { "JGT", {\
+        {0x06, {TokenType::ADDRESS}} }},\
+    { "JOF", {\
+        {0x07, {TokenType::ADDRESS}} }},\
+    { "CALL", {\
+        {0x08, {TokenType::ADDRESS}} }},\
+    { "RET", {\
+        {0x09, {TokenType::ADDRESS}} }},\
     { "MOV", {\
         {0x10, {TokenType::REGISTER, TokenType::NUMBER}},\
-        {0x11, {TokenType::REGISTER, TokenType::REGISTER}} }},\
+        {0x11, {TokenType::REGISTER, TokenType::REGISTER}},\
+        {0x12, {TokenType::REGISTER, TokenType::ADDRESS}},\
+        {0x13, {TokenType::ADDRESS, TokenType::REGISTER}},\
+        {0x14, {TokenType::ADDRESS, TokenType::NUMBER}},\
+        {0x15, {TokenType::ADDRESS, TokenType::ADDRESS}} }},\
     { "PSH", {\
-        {0x12, {TokenType::REGISTER}},\
-        {0x13, {TokenType::NUMBER}} }},\
+        {0x16, {TokenType::REGISTER}},\
+        {0x17, {TokenType::NUMBER}},\
+        {0x17, {TokenType::ADDRESS}} }},\
     { "POP", {\
-        {0x12, {TokenType::REGISTER}} }}\
+        {0x18, {TokenType::REGISTER}},\
+        {0x19, {TokenType::ADDRESS}} }},\
+    { "ALLOC", {\
+        {0x1A, {}},\
+        {0x1B, {TokenType::NUMBER}},\
+        {0x1C, {TokenType::REGISTER}},\
+        {0x1D, {TokenType::ADDRESS}} }},\
+    { "FREE", {\
+        {0x1E, {}},\
+        {0x1F, {TokenType::NUMBER}},\
+        {0x20, {TokenType::REGISTER}},\
+        {0x21, {TokenType::ADDRESS}} }},\
+    { "REALLOC", {\
+        {0x22, {TokenType::REGISTER, TokenType::REGISTER}},\
+        {0x23, {TokenType::REGISTER, TokenType::ADDRESS}},\
+        {0x24, {TokenType::REGISTER, TokenType::LITERAL}},\
+        {0x25, {TokenType::ADDRESS, TokenType::REGISTER}},\
+        {0x26, {TokenType::ADDRESS, TokenType::ADDRESS}},\
+        {0x27, {TokenType::ADDRESS, TokenType::LITERAL}} }},\
+    { "ADD", {\
+        {0x60, {TokenType::REGISTER, TokenType::REGISTER}},\
+        {0x61, {TokenType::REGISTER, TokenType::LITERAL}},\
+        {0x62, {TokenType::REGISTER, TokenType::ADDRESS}},\
+        {0x63, {}} }},\
+    { "SUB", {\
+        {0x64, {TokenType::REGISTER, TokenType::REGISTER}},\
+        {0x65, {TokenType::REGISTER, TokenType::LITERAL}},\
+        {0x66, {TokenType::REGISTER, TokenType::ADDRESS}},\
+        {0x67, {}} }},\
+    { "DIV", {\
+        {0x68, {TokenType::REGISTER, TokenType::REGISTER}},\
+        {0x69, {TokenType::REGISTER, TokenType::LITERAL}},\
+        {0x6A, {TokenType::REGISTER, TokenType::ADDRESS}},\
+        {0x6B, {}} }},\
+    { "MUL", {\
+        {0x6C, {TokenType::REGISTER, TokenType::REGISTER}},\
+        {0x6D, {TokenType::REGISTER, TokenType::LITERAL}},\
+        {0x6E, {TokenType::REGISTER, TokenType::ADDRESS}},\
+        {0x6F, {}} }},\
+    { "POW", {\
+        {0x6C, {TokenType::REGISTER, TokenType::REGISTER}},\
+        {0x6D, {TokenType::REGISTER, TokenType::LITERAL}},\
+        {0x6E, {TokenType::REGISTER, TokenType::ADDRESS}},\
+        {0x6F, {}} }},\
+    { "MOD", {\
+        {0x6C, {TokenType::REGISTER, TokenType::REGISTER}},\
+        {0x6D, {TokenType::REGISTER, TokenType::LITERAL}},\
+        {0x6E, {TokenType::REGISTER, TokenType::ADDRESS}},\
+        {0x6F, {}} }},\
+    { "FRS", {\
+        {0xF0, {}} }},\
+    { "CMP", {\
+        {0xF1, {}} }},\
+    { "SYS", {\
+        {0xFF, {}} }},\
 }
 
 // how to compile:
